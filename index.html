@@ -501,10 +501,12 @@ const hasNativeStorage = window.storage && typeof window.storage.get === 'functi
 
 async function loadApps(){
   try{
-    // Try fetching the apps database first
-    const response = await fetch('apps.json');
+    // Always fetch fresh — bypass browser & CDN cache
+    const response = await fetch('apps.json?v=' + Date.now(), { cache: 'no-store' });
     if (response.ok) {
       apps = await response.json();
+      // Clear any stale local storage so it doesn't override the fresh data
+      try { localStorage.removeItem('playstore-apps'); } catch(e){}
     } else {
       apps = await loadBackupApps();
     }
