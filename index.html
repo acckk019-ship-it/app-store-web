@@ -220,6 +220,57 @@
   .btn-primary:hover{background:var(--accent-dim);}
   .form-error{font-size:12.5px; color:#F28B82; margin-top:12px;}
 
+  /* DOWNLOAD PASSWORD MODAL */
+  .dl-modal-backdrop{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:30;
+    align-items:center; justify-content:center; padding:20px;
+    backdrop-filter:blur(4px);
+  }
+  .dl-modal-backdrop.open{display:flex;}
+  .dl-modal{
+    background:var(--bg-raised); border:1px solid var(--border); border-radius:var(--radius-lg);
+    max-width:420px; width:100%; padding:36px 32px 32px;
+    box-shadow:0 24px 80px rgba(0,0,0,0.6);
+    animation: dlModalIn 0.2s ease-out;
+  }
+  @keyframes dlModalIn {
+    from { transform: translateY(20px) scale(0.97); opacity:0; }
+    to   { transform: translateY(0)    scale(1);    opacity:1; }
+  }
+  .dl-lock-icon{
+    width:54px; height:54px; border-radius:16px; background:rgba(61,220,151,0.12);
+    border:1px solid rgba(61,220,151,0.25); display:flex; align-items:center; justify-content:center;
+    margin:0 auto 20px;
+  }
+  .dl-lock-icon svg{width:26px; height:26px; color:var(--accent);}
+  .dl-modal-title{font-size:18px; font-weight:600; margin:0 0 6px; text-align:center; color:var(--text-hi);}
+  .dl-modal-sub{font-size:13px; color:var(--text-low); text-align:center; margin:0 0 24px; line-height:1.55;}
+  .dl-input-wrap{position:relative; margin-bottom:6px;}
+  .dl-input-wrap input{
+    width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text-hi);
+    padding:12px 44px 12px 16px; font-size:14px; border-radius:var(--radius-md); font-family:inherit;
+    letter-spacing:0.1em;
+  }
+  .dl-input-wrap input:focus{outline:none; border-color:var(--accent);}
+  .dl-toggle-vis{
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    background:none; border:none; color:var(--text-low); cursor:pointer; padding:4px;
+    display:flex; align-items:center;
+  }
+  .dl-toggle-vis:hover{color:var(--text-mid);}
+  .dl-toggle-vis svg{width:16px; height:16px;}
+  .dl-error{font-size:12px; color:#F28B82; min-height:18px; margin-bottom:16px; text-align:center;}
+  .dl-btn{
+    width:100%; background:var(--accent); color:#08211A; border:none;
+    padding:13px 22px; border-radius:var(--radius-md); font-size:14px; font-weight:700;
+    font-family:inherit; cursor:pointer; transition: background 0.15s;
+  }
+  .dl-btn:hover{background:var(--accent-dim);}
+  .dl-btn:active{transform:scale(0.98);}
+  .dl-cancel{display:block; margin:14px auto 0; background:none; border:none; color:var(--text-low);
+    font-size:12.5px; cursor:pointer; font-family:inherit;}
+  .dl-cancel:hover{color:var(--text-mid);}
+
   @keyframes pulse {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(61, 220, 151, 0.7); }
     70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(61, 220, 151, 0); }
@@ -283,6 +334,32 @@
       <div class="detail" id="detail-view"></div>
 
     </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD PASSWORD GATE -->
+<div class="dl-modal-backdrop" id="dl-modal-backdrop">
+  <div class="dl-modal">
+    <div class="dl-lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <p class="dl-modal-title">Password Required</p>
+    <p class="dl-modal-sub">Enter the download password to access this file.</p>
+    <div class="dl-input-wrap">
+      <input type="password" id="dl-password-input" placeholder="Enter password" autocomplete="off"
+             onkeydown="if(event.key==='Enter') submitDownloadPassword()">
+      <button class="dl-toggle-vis" onclick="toggleDlPasswordVis()" title="Show/hide password" type="button">
+        <svg id="dl-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+    <p class="dl-error" id="dl-error"></p>
+    <button class="dl-btn" onclick="submitDownloadPassword()">Unlock & Download</button>
+    <button class="dl-cancel" onclick="closeDlModal()">Cancel</button>
   </div>
 </div>
 
@@ -592,6 +669,11 @@ function renderDetail(){
   `;
 }
 
+// Download password gate
+const DOWNLOAD_PASSWORD = '1234';
+let pendingDownloadAppId = null;
+let pendingDownloadIndex = null;
+
 function downloadVersion(appId, index){
   const app = apps.find(a => a.id === appId);
   if(!app) return;
@@ -600,12 +682,58 @@ function downloadVersion(appId, index){
     alert('No download file or link set for this version yet.');
     return;
   }
+  // Check if already unlocked this session
+  if(sessionStorage.getItem('dl_unlocked') === 'yes'){
+    triggerDownload(appId, index);
+    return;
+  }
+  // Show password modal
+  pendingDownloadAppId = appId;
+  pendingDownloadIndex = index;
+  document.getElementById('dl-modal-backdrop').classList.add('open');
+  document.getElementById('dl-password-input').value = '';
+  document.getElementById('dl-error').textContent = '';
+  setTimeout(() => document.getElementById('dl-password-input').focus(), 80);
+}
+
+function triggerDownload(appId, index){
+  const app = apps.find(a => a.id === appId);
+  if(!app) return;
+  const v = app.versions[index];
   const link = document.createElement('a');
   link.href = v.url;
   link.download = `${app.name.replace(/\s+/g,'-')}-${v.version}`;
   document.body.appendChild(link);
   link.click();
   link.remove();
+}
+
+function submitDownloadPassword(){
+  const entered = document.getElementById('dl-password-input').value;
+  if(entered === DOWNLOAD_PASSWORD){
+    sessionStorage.setItem('dl_unlocked', 'yes');
+    closeDlModal();
+    if(pendingDownloadAppId !== null){
+      triggerDownload(pendingDownloadAppId, pendingDownloadIndex);
+      pendingDownloadAppId = null;
+      pendingDownloadIndex = null;
+    }
+  } else {
+    const err = document.getElementById('dl-error');
+    err.textContent = 'Incorrect password. Please try again.';
+    document.getElementById('dl-password-input').select();
+  }
+}
+
+function closeDlModal(){
+  document.getElementById('dl-modal-backdrop').classList.remove('open');
+  document.getElementById('dl-password-input').value = '';
+  document.getElementById('dl-error').textContent = '';
+}
+
+function toggleDlPasswordVis(){
+  const inp = document.getElementById('dl-password-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
 }
 
 async function promptNewVersion(appId){

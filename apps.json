@@ -1,5 +1,35 @@
 [
   {
+    "id": "app-debug-22",
+    "name": "سنن النبي - تحدي 2000 سنة",
+    "developer": "App Debug 22",
+    "category": "Islamic",
+    "platform": "Android",
+    "icon": "uploads/icons/app-debug-22_icon.jpg",
+    "banner": "uploads/banners/app-debug-22_banner.jpg",
+    "screenshots": [
+      "uploads/screenshots/app-debug-22_screen_1.jpg",
+      "uploads/screenshots/app-debug-22_screen_2.jpg",
+      "uploads/screenshots/app-debug-22_screen_3.jpg",
+      "uploads/screenshots/app-debug-22_screen_4.jpg",
+      "uploads/screenshots/app-debug-22_screen_5.jpg"
+    ],
+    "description": "تطبيق إسلامي شامل لتتبع السنن النبوية الشريفة. يتضمن تحدي ممارسة 2000 سنة نبوية، وخريطة السنن التفاعلية، وبحث في السنن حسب الفئة، ومواقيت الفضل والتقويم الهجري. صمم لمساعدة المسلمين على إحياء السنة النبوية في حياتهم اليومية.",
+    "rating": null,
+    "ratingCount": "0",
+    "downloads": "0",
+    "versions": [
+      {
+        "version": "22",
+        "notes": "الإصدار الثاني والعشرون - تطبيق سنن النبي لتتبع وممارسة السنن النبوية.",
+        "url": "uploads/apps/app-debug-22.apk",
+        "size": "18.4 MB",
+        "date": "2026-07-15"
+      }
+    ]
+  },
+
+  {
     "id": "seed-1",
     "name": "Night Owl Timer",
     "developer": "Faint Signal Software",
