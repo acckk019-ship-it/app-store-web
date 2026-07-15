@@ -1,0 +1,6 @@
+{
+  "name": "السنن النبوية الصحيحة",
+  "description": "An interactive Prophetic Sunnah application containing categorized authentic Sunnahs with reliable sources, a dynamic visual Mindmap, a dual Islamic Hijri-Gregorian Calendar with internal tabs for sacred days and recommended virtues, and robust habit tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

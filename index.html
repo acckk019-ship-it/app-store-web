@@ -303,6 +303,12 @@
     <button class="rail-btn" title="Add an app" onclick="openModal()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
+    <button class="rail-btn" id="rail-control-btn" style="display:none;" title="App Management" onclick="openControlModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
   </div>
 
   <div class="main">
@@ -360,6 +366,75 @@
     <p class="dl-error" id="dl-error"></p>
     <button class="dl-btn" onclick="submitDownloadPassword()">Unlock & Download</button>
     <button class="dl-cancel" onclick="closeDlModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- APP REMOTE CONTROL MODAL -->
+<div class="modal-backdrop" id="control-modal-backdrop">
+  <div class="modal">
+    <p class="modal-title">App Remote Control Panel</p>
+    <p class="modal-sub">Configure the live state of the Android app. Changes will be saved to control.json and pushed to GitHub Pages.</p>
+    
+    <div class="form-grid">
+      <!-- Version / Update Section -->
+      <div class="full" style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-bottom:8px; font-weight:700; color:var(--accent);">
+        1. Remote Update Detection
+      </div>
+      <div>
+        <label>Latest Version Code (e.g. 23)</label>
+        <input type="text" id="ctrl-version" placeholder="22">
+      </div>
+      <div>
+        <label>Latest Version Name (e.g. 1.0.1)</label>
+        <input type="text" id="ctrl-version-name" placeholder="1.0.0">
+      </div>
+      <div class="full">
+        <label>Update Dialog Message (Arabic)</label>
+        <input type="text" id="ctrl-update-msg" placeholder="يوجد تحديث جديد للتطبيق! الرجاء تحديث التطبيق للاستمتاع بالميزات الجديدة.">
+      </div>
+      <div class="full">
+        <label>Update URL</label>
+        <input type="url" id="ctrl-update-url" placeholder="https://acckk019-ship-it.github.io/app-store-web/">
+      </div>
+      
+      <!-- Force Close Section -->
+      <div class="full" style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-top:14px; margin-bottom:8px; font-weight:700; color:var(--accent);">
+        2. Remote Close App (Disable)
+      </div>
+      <div class="full" style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <input type="checkbox" id="ctrl-force-close" style="width:18px; height:18px; accent-color:var(--accent); cursor:pointer;">
+        <label for="ctrl-force-close" style="margin:0; cursor:pointer; font-size:13.5px; color:var(--text-hi);">Enable Force-Close (Blocks App UI)</label>
+      </div>
+      <div class="full">
+        <label>Force-Close Message (Arabic)</label>
+        <input type="text" id="ctrl-force-close-msg" placeholder="تم إيقاف التطبيق مؤقتاً. الرجاء المحاولة لاحقاً.">
+      </div>
+
+      <!-- Under Development Section -->
+      <div class="full" style="border-bottom:1px solid var(--border); padding-bottom:8px; margin-top:14px; margin-bottom:8px; font-weight:700; color:var(--accent);">
+        3. App Under Development Banner
+      </div>
+      <div class="full" style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <input type="checkbox" id="ctrl-under-dev" style="width:18px; height:18px; accent-color:var(--accent); cursor:pointer;">
+        <label for="ctrl-under-dev" style="margin:0; cursor:pointer; font-size:13.5px; color:var(--text-hi);">Show "Under Development" warning banner</label>
+      </div>
+      <div class="full">
+        <label>Development Message (Arabic)</label>
+        <input type="text" id="ctrl-under-dev-msg" placeholder="التطبيق قيد التطوير. قد تواجه بعض المشكلات.">
+      </div>
+
+      <!-- Passcode -->
+      <div class="full" style="margin-top:14px;">
+        <label style="color:var(--accent);">Admin Passcode (required)</label>
+        <input type="password" id="ctrl-passcode" placeholder="Enter passcode to publish">
+      </div>
+    </div>
+
+    <p class="form-error" id="ctrl-error"></p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeControlModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitControlSettings()">Publish Settings</button>
+    </div>
   </div>
 </div>
 
@@ -973,9 +1048,94 @@ document.getElementById('search-input').addEventListener('input', e => {
   renderHome();
 });
 
+// App Remote Control functions
+async function openControlModal() {
+  document.getElementById('control-modal-backdrop').classList.add('open');
+  const cachedPass = sessionStorage.getItem('admin_passcode');
+  if (cachedPass) {
+    document.getElementById('ctrl-passcode').value = cachedPass;
+  }
+  document.getElementById('ctrl-error').textContent = 'Loading settings...';
+  document.getElementById('ctrl-error').style.color = 'var(--text-mid)';
+  
+  try {
+    const response = await fetch('/api/control?v=' + Date.now(), { cache: 'no-store' });
+    if (response.ok) {
+      const data = await response.json();
+      document.getElementById('ctrl-version').value = data.latestVersion || '';
+      document.getElementById('ctrl-version-name').value = data.latestVersionName || '';
+      document.getElementById('ctrl-update-msg').value = data.updateMessage || '';
+      document.getElementById('ctrl-update-url').value = data.updateUrl || '';
+      document.getElementById('ctrl-force-close').checked = !!data.forceClose;
+      document.getElementById('ctrl-force-close-msg').value = data.forceCloseMessage || '';
+      document.getElementById('ctrl-under-dev').checked = !!data.underDevelopment;
+      document.getElementById('ctrl-under-dev-msg').value = data.underDevelopmentMessage || '';
+      document.getElementById('ctrl-error').textContent = '';
+    } else {
+      document.getElementById('ctrl-error').textContent = 'Failed to load current settings.';
+      document.getElementById('ctrl-error').style.color = '#F28B82';
+    }
+  } catch (e) {
+    document.getElementById('ctrl-error').textContent = 'Error loading settings: ' + e.message;
+    document.getElementById('ctrl-error').style.color = '#F28B82';
+  }
+}
+
+function closeControlModal() {
+  document.getElementById('control-modal-backdrop').classList.remove('open');
+  document.getElementById('ctrl-error').textContent = '';
+}
+
+async function submitControlSettings() {
+  const latestVersion = document.getElementById('ctrl-version').value.trim();
+  const latestVersionName = document.getElementById('ctrl-version-name').value.trim();
+  const updateMessage = document.getElementById('ctrl-update-msg').value.trim();
+  const updateUrl = document.getElementById('ctrl-update-url').value.trim();
+  const forceClose = document.getElementById('ctrl-force-close').checked;
+  const forceCloseMessage = document.getElementById('ctrl-force-close-msg').value.trim();
+  const underDevelopment = document.getElementById('ctrl-under-dev').checked;
+  const underDevelopmentMessage = document.getElementById('ctrl-under-dev-msg').value.trim();
+  const passcode = document.getElementById('ctrl-passcode').value.trim();
+  
+  if (!passcode) {
+    document.getElementById('ctrl-error').textContent = 'Admin passcode is required.';
+    document.getElementById('ctrl-error').style.color = '#F28B82';
+    return;
+  }
+  
+  sessionStorage.setItem('admin_passcode', passcode);
+  document.getElementById('ctrl-error').textContent = 'Saving settings and syncing to GitHub... Please wait.';
+  document.getElementById('ctrl-error').style.color = 'var(--accent)';
+  
+  try {
+    const response = await fetch('/api/control', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        latestVersion, latestVersionName, updateMessage, updateUrl,
+        forceClose, forceCloseMessage, underDevelopment, underDevelopmentMessage,
+        passcode
+      })
+    });
+    
+    const result = await response.json();
+    if (result.success) {
+      alert('Remote control settings updated and published successfully!');
+      closeControlModal();
+    } else {
+      document.getElementById('ctrl-error').textContent = 'Update failed: ' + result.error;
+      document.getElementById('ctrl-error').style.color = '#F28B82';
+    }
+  } catch (e) {
+    document.getElementById('ctrl-error').textContent = 'Error connecting to helper: ' + e.message;
+    document.getElementById('ctrl-error').style.color = '#F28B82';
+  }
+}
+
 // Setup admin mode styles
 if (isAdminMode()) {
   document.getElementById('admin-badge').style.display = 'flex';
+  document.getElementById('rail-control-btn').style.display = 'flex';
 }
 
 loadApps();

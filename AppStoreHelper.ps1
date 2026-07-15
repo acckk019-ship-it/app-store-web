@@ -337,6 +337,85 @@ while ($listener.IsListening) {
             $res.OutputStream.Write($resBytes, 0, $resBytes.Length)
         }
         $res.Close()
+    }
+    elseif ($req.HttpMethod -eq "GET" -and $rawPath -eq "/api/control") {
+        # Fetch the current remote control settings
+        try {
+            $controlPath = Join-Path $baseDir "control.json"
+            $content = "{}"
+            if (Test-Path $controlPath) {
+                $content = Get-Content $controlPath -Raw
+            }
+            $res.ContentType = "application/json; charset=utf-8"
+            $resBytes = [System.Text.Encoding]::UTF8.GetBytes($content)
+            $res.OutputStream.Write($resBytes, 0, $resBytes.Length)
+        } catch {
+            $res.StatusCode = 500
+            $res.ContentType = "application/json"
+            $responseObj = @{ success = $false; error = $_.Exception.Message }
+            $resBytes = [System.Text.Encoding]::UTF8.GetBytes(($responseObj | ConvertTo-Json))
+            $res.OutputStream.Write($resBytes, 0, $resBytes.Length)
+        }
+        $res.Close()
+    }
+    elseif ($req.HttpMethod -eq "POST" -and $rawPath -eq "/api/control") {
+        # Update remote control settings (control.json) and push to GitHub
+        try {
+            $reader = New-Object System.IO.StreamReader($req.InputStream, [System.Text.Encoding]::UTF8)
+            $body = $reader.ReadToEnd()
+            $payload = ConvertFrom-Json $body
+            
+            # Validate passcode
+            if (-not (Test-Passcode $payload.passcode)) {
+                Write-Host "Control update rejected: Invalid passcode."
+                $res.StatusCode = 401
+                $res.ContentType = "application/json"
+                $responseObj = @{ success = $false; error = "Invalid admin passcode." }
+                $resBytes = [System.Text.Encoding]::UTF8.GetBytes(($responseObj | ConvertTo-Json))
+                $res.OutputStream.Write($resBytes, 0, $resBytes.Length)
+                $res.Close()
+                continue
+            }
+            
+            Write-Host "Updating remote control settings..."
+            
+            $controlObj = @{
+                latestVersion           = $payload.latestVersion.ToString().Trim()
+                latestVersionName       = $payload.latestVersionName.ToString().Trim()
+                updateMessage           = $payload.updateMessage.ToString().Trim()
+                updateUrl               = $payload.updateUrl.ToString().Trim()
+                forceClose              = [System.Convert]::ToBoolean($payload.forceClose)
+                forceCloseMessage       = $payload.forceCloseMessage.ToString().Trim()
+                underDevelopment        = [System.Convert]::ToBoolean($payload.underDevelopment)
+                underDevelopmentMessage = $payload.underDevelopmentMessage.ToString().Trim()
+                lastUpdated             = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+            }
+            
+            $controlPath = Join-Path $baseDir "control.json"
+            $controlObj | ConvertTo-Json | Out-File -FilePath $controlPath -Encoding utf8
+            
+            Write-Host "control.json saved locally. Committing and pushing to GitHub..."
+            
+            # Git integration
+            git add control.json
+            git commit -m "Update app remote control parameters"
+            git push
+            
+            Write-Host "Sync complete!"
+            
+            $res.ContentType = "application/json"
+            $responseObj = @{ success = $true }
+            $resBytes = [System.Text.Encoding]::UTF8.GetBytes(($responseObj | ConvertTo-Json))
+            $res.OutputStream.Write($resBytes, 0, $resBytes.Length)
+        } catch {
+            Write-Host "Error during control update: $_"
+            $res.StatusCode = 500
+            $res.ContentType = "application/json"
+            $responseObj = @{ success = $false; error = $_.Exception.Message }
+            $resBytes = [System.Text.Encoding]::UTF8.GetBytes(($responseObj | ConvertTo-Json))
+            $res.OutputStream.Write($resBytes, 0, $resBytes.Length)
+        }
+        $res.Close()
     } else {
         $res.StatusCode = 405
         $res.Close()
