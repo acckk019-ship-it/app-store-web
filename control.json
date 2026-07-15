@@ -1,11 +1,11 @@
-{
-  "latestVersion": "22",
-  "latestVersionName": "22",
-  "updateMessage": "يوجد تحديث جديد للتطبيق! الرجاء تحديث التطبيق للاستمتاع بالميزات الجديدة.",
-  "updateUrl": "https://acckk019-ship-it.github.io/app-store-web/",
-  "forceClose": false,
-  "forceCloseMessage": "تم إيقاف التطبيق مؤقتاً. الرجاء المحاولة لاحقاً.",
-  "underDevelopment": false,
-  "underDevelopmentMessage": "التطبيق قيد التطوير. قد تواجه بعض المشكلات.",
-  "lastUpdated": "2026-07-15"
+﻿{
+    "underDevelopment":  false,
+    "lastUpdated":  "2026-07-15 06:25:25",
+    "forceClose":  true,
+    "latestVersionName":  "",
+    "latestVersion":  "",
+    "forceCloseMessage":  "",
+    "updateUrl":  "",
+    "updateMessage":  "",
+    "underDevelopmentMessage":  ""
 }
