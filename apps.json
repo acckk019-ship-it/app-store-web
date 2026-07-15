@@ -1,0 +1,92 @@
+[
+  {
+    "id": "seed-1",
+    "name": "Night Owl Timer",
+    "developer": "Faint Signal Software",
+    "category": "Productivity",
+    "platform": "macOS",
+    "icon": "",
+    "banner": "",
+    "screenshots": [],
+    "description": "A focus timer that dims your screen and mutes notifications automatically after dark. Set a sunset schedule once and forget about it.",
+    "rating": 4.6,
+    "ratingCount": "2.1K",
+    "downloads": "10K+",
+    "versions": [
+      {
+        "version": "2.3.0",
+        "date": "2026-06-02",
+        "notes": "Added custom sunset schedules and a menu bar countdown.",
+        "url": "#",
+        "size": "9 MB"
+      },
+      {
+        "version": "2.2.1",
+        "date": "2026-04-11",
+        "notes": "Fixed a crash on wake from sleep.",
+        "url": "#",
+        "size": "9 MB"
+      }
+    ]
+  },
+  {
+    "id": "seed-2",
+    "name": "Ledgerline",
+    "developer": "Ledgerline Co",
+    "category": "Finance",
+    "platform": "Windows, macOS",
+    "icon": "",
+    "banner": "",
+    "screenshots": [],
+    "description": "Simple envelope budgeting with CSV import. No account required, everything stays on your device.",
+    "rating": 4.3,
+    "ratingCount": "890",
+    "downloads": "5K+",
+    "versions": [
+      {
+        "version": "1.4.2",
+        "date": "2026-06-28",
+        "notes": "Faster CSV import for large statements.",
+        "url": "#",
+        "size": "22 MB"
+      },
+      {
+        "version": "1.4.0",
+        "date": "2026-05-15",
+        "notes": "Added multi-currency support.",
+        "url": "#",
+        "size": "22 MB"
+      }
+    ]
+  },
+  {
+    "id": "seed-3",
+    "name": "Fieldnote",
+    "developer": "Fieldnote Labs",
+    "category": "Utilities",
+    "platform": "iOS, Android",
+    "icon": "",
+    "banner": "",
+    "screenshots": [],
+    "description": "Voice-to-text field notes for site visits, with offline mode and photo tagging.",
+    "rating": 4.8,
+    "ratingCount": "4.7K",
+    "downloads": "50K+",
+    "versions": [
+      {
+        "version": "3.1.0",
+        "date": "2026-07-01",
+        "notes": "Offline mode now works for photo tagging too.",
+        "url": "#",
+        "size": "31 MB"
+      },
+      {
+        "version": "3.0.4",
+        "date": "2026-05-30",
+        "notes": "Bug fixes for Android 15.",
+        "url": "#",
+        "size": "30 MB"
+      }
+    ]
+  }
+]
