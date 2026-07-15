@@ -41,7 +41,7 @@ $listener.Prefixes.Add("http://localhost:$port/")
 try {
     $listener.Start()
 } catch {
-    Write-Host "Error starting HTTP listener on port $port: $_"
+    Write-Host "Error starting HTTP listener on port $($port): $_"
     exit 1
 }
 
