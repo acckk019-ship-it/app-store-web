@@ -65,7 +65,8 @@ object AppControlService {
             if (!response.isSuccessful) return@withContext AppControl()
 
             val body = response.body?.string() ?: return@withContext AppControl()
-            val json = JSONObject(body)
+            val cleanBody = if (body.startsWith("\uFEFF")) body.substring(1) else body
+            val json = JSONObject(cleanBody)
 
             AppControl(
                 latestVersion      = json.optString("latestVersion", ""),

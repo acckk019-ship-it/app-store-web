@@ -235,7 +235,7 @@ while ($listener.IsListening) {
             $updatedApps = ,$newApp + $existingApps
             
             # Save back to apps.json
-            $updatedApps | ConvertTo-Json -Depth 10 | Out-File -FilePath $appsJsonPath -Encoding utf8
+            [System.IO.File]::WriteAllText($appsJsonPath, ($updatedApps | ConvertTo-Json -Depth 10), (New-Object System.Text.UTF8Encoding($false)))
             
             Write-Host "App saved locally. Committing and pushing to GitHub..."
             
@@ -313,7 +313,7 @@ while ($listener.IsListening) {
             }
             
             # Save back to apps.json
-            $existingApps | ConvertTo-Json -Depth 10 | Out-File -FilePath $appsJsonPath -Encoding utf8
+            [System.IO.File]::WriteAllText($appsJsonPath, ($existingApps | ConvertTo-Json -Depth 10), (New-Object System.Text.UTF8Encoding($false)))
             
             Write-Host "Version saved locally. Committing and pushing to GitHub..."
             
@@ -392,7 +392,7 @@ while ($listener.IsListening) {
             }
             
             $controlPath = Join-Path $baseDir "control.json"
-            $controlObj | ConvertTo-Json | Out-File -FilePath $controlPath -Encoding utf8
+            [System.IO.File]::WriteAllText($controlPath, ($controlObj | ConvertTo-Json), (New-Object System.Text.UTF8Encoding($false)))
             
             Write-Host "control.json saved locally. Committing and pushing to GitHub..."
             
